@@ -24,7 +24,7 @@ Installation
 1. Clone the repository:
 bash
 Copy code
-git clone https://github.com/Krishna72user/weather-app.git
+git clone https://github.com/Krishna72user/Weather-App.git
 2. Navigate into the project directory:
 bash
 Copy code
