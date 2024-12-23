@@ -104,7 +104,6 @@ svg{
 }
 .c,.weatherDetails div >div{
     color: #fdfefe9a;
-    width:2em;
     padding: 0.5em;
     margin-bottom: 0.4em;
 }
@@ -114,6 +113,9 @@ h3{
 .cc{
     display: flex;
     gap: 20em;
+}
+.cc>div{
+    width:4em;
 }
 h4{
     margin-top: 0.7em;
@@ -231,4 +233,8 @@ h4{
     footer{
         bottom: 7vh;
     }
+}
+.c:hover{
+    background-color: rgba(16, 16, 16, 0.36);
+    border-radius: 13px;
 }
