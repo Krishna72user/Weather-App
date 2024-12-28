@@ -18,6 +18,7 @@ Technologies Used
 - Weather API:
     - OpenWeatherMap API  for retrieving weather data.
     - BigdDataCloud API for retrieving timezone information.
+    - Geoapify for retrieving longitude and latitude.
 
 Installation
 
@@ -62,5 +63,6 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 Acknowledgments
  - OpenWeatherMap API for providing the weather data.
- - BigDatacloud API for providing the timezon data.
+ - BigDatacloud API for providing the timezone data.
+ - Geoapify API for providing longitude and latitude.
  - Inspired by various weather apps available online.

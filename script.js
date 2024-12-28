@@ -1,4 +1,6 @@
 const w_key = document.querySelector(`meta[name="W-API-KEY"`).content;
+const l_key = document.querySelector(`meta[name="L-API-KEY" ]`).content;
+document.querySelector(`meta[name="L-API-KEY" ]`).remove();
 document.querySelector(`meta[name="W-API-KEY"`).remove()
 const t_key = document.querySelector(`meta[name="T-API-KEY"]`).content;
 document.querySelector(`meta[name="T-API-KEY"`).remove()
@@ -23,6 +25,7 @@ const rel = document.querySelector(".h");
 const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 const body = document.body;
+// body.style.display="none";
 let query = "";
 let report;
 let types = {
@@ -69,9 +72,56 @@ let back={
 }
 function def(){
     const url = `https://api.openweathermap.org/data/2.5/weather?q=London&units=metric&appid=${w_key}`;
-     (async function main(){
-         let response =  await fetch(url);
-         report =await response.json();
+    (async function main(){
+        let response =  await fetch(url);
+        report =await response.json();
+        let locresponse = await fetch(`https://api.geoapify.com/v1/geocode/search?text=London&limit=1&apiKey=${l_key}`);
+        let report2 = await locresponse.json();
+        const url2 =`https://api-bdc.net/data/timezone-by-location?latitude=${report2.features[0].properties.lat}&longitude=${report2.features[0].properties.lon}&key=${t_key}`;
+        (async function time(){
+            let r = await fetch(url2);
+            let times =await r.json();
+            let timess = new Date(`${times.localTime}`);
+            body.style.backgroundImage=`url(${back[x]})`;
+            condition.innerText=`${types[x]}`
+            icon.src= `${icons[x]}`;
+            if(timess.getMinutes().toString().length==1&&timess.getHours().toString().length==1){
+                timesis.innerText=`0${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
+            }
+            else if(timess.getHours().toString().length==1){
+                timesis.innerText=`0${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
+            }
+            else if(timess.getMinutes().toString().length==1){
+                if(parseInt(timess.getHours())>=19){
+                    if(x =="Clear"){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\nightmoon.svg`;
+                        condition.innerText=`Clear sky`
+                    }
+                    else if(report.clouds.all<50){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\partly-cloudy-night.svg`;
+                        condition.innerText=`Partly cloudy night`
+                    }
+                }
+                timesis.innerText=`${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
+            }
+            else{
+                if(parseInt(timess.getHours())>=19){
+                    if(x =="Clear"){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\nightmoon.svg`;
+                        condition.innerText=`Clear sky`
+                    }
+                    else if(report.clouds.all<50){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\partly-cloudy-night.svg`;
+                        condition.innerText=`Partly cloudy night`
+                    }
+                }
+                timesis.innerText=`${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
+            }
+        })();
         
         if(report.clouds.all>50){
             back={
@@ -169,9 +219,6 @@ function def(){
         humidity.innerText=`${report.main.humidity}%`;
         wind.innerText=`${report.wind.speed} km/h`;
         let x = report.weather[0].main;
-        condition.innerText=`${types[x]}`
-        body.style.backgroundImage=`url(${back[x]})`;
-        icon.src= `${icons[x]}`;
         if("rain" in report){
             opvl.innerText=`${report.rain["1h"]} mm`;
         }
@@ -183,25 +230,6 @@ function def(){
             op.innerText=`Rain`;
             opvl.innerText="00 mm";
         }
-        const url2 =`https://api-bdc.net/data/timezone-by-location?latitude=${report.coord.lat}&longitude=${report.coord.lon}&key=${t_key}`;
-        (async function time(){
-            let r = await fetch(url2);
-            let times =await r.json();
-            let timess = new Date(`${times.localTime}`);
-            if(timess.getMinutes().toString().length==1&&timess.getHours().toString().length==1){
-                timesis.innerText=`0${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
-            }
-            else if(timess.getHours().toString().length==1){
-                timesis.innerText=`0${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
-            }
-            else if(timess.getMinutes().toString().length==1){
-                timesis.innerText=`${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
-            }
-            else{
-                timesis.innerText=`${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
-            }
-           
-        })();
     })();
 }
 inp.addEventListener("keydown",(e)=>{
@@ -230,6 +258,53 @@ subm.addEventListener("click",()=>{
         else{
             icon.style.display="inline"
             citis.style.color="white";
+            let locresponse = await fetch(`https://api.geoapify.com/v1/geocode/search?text=${query}&limit=1&apiKey=${l_key}`);
+            let report2 = await locresponse.json();
+            const url2 =`https://api-bdc.net/data/timezone-by-location?latitude=${report2.features[0].properties.lat}&longitude=${report2.features[0].properties.lon}&key=${t_key}`;
+            (async function time(){
+                let r = await fetch(url2);
+                let times =await r.json();
+                let timess = new Date(`${times.localTime}`);
+                condition.innerText=`${types[x]}`
+                icon.src= `${icons[x]}`;
+                body.style.backgroundImage=`url(${back[x]})`;
+                if(timess.getMinutes().toString().length==1&&timess.getHours().toString().length==1){
+                    timesis.innerText=`0${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
+                }
+                else if(timess.getHours().toString().length==1){
+                    timesis.innerText=`0${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
+                }
+                else if(timess.getMinutes().toString().length==1){
+                    if(parseInt(timess.getHours())>=19){
+                        if(x =="Clear"){
+                            body.style.backgroundImage="url(assets/night.jpeg)";
+                            icon.src = `assets\\nightmoon.svg`;
+                            condition.innerText=`Clear night`
+                        }
+                        else if(report.clouds.all<50){
+                            body.style.backgroundImage="url(assets/night.jpeg)";
+                            icon.src = `assets\\partly-cloudy-night.svg`;
+                            condition.innerText=`Partly cloudy night`
+                        }
+                    }
+                    timesis.innerText=`${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
+                }
+                else{
+                    if(parseInt(timess.getHours())>=19){
+                        if(x =="Clear"){
+                            body.style.backgroundImage="url(assets/night.jpeg)";
+                            icon.src = `assets\\nightmoon.svg`;
+                            condition.innerText=`Clear night`
+                        }
+                        else if(report.clouds.all<50){
+                            body.style.backgroundImage="url(assets/night.jpeg)";
+                            icon.src = `assets\\partly-cloudy-night.svg`;
+                            condition.innerText=`Partly cloudy night`
+                        }
+                    }
+                    timesis.innerText=`${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
+                }
+            })();
             if(report.clouds.all>50){
                 back={
                     Clouds:"assets/cloudy.webp",
@@ -258,7 +333,6 @@ subm.addEventListener("click",()=>{
                     Snow:"assets/snowy.svg",
                     Smoke:"assets/foggy.svg",
                     Haze:"assets/hazy.svg"
-                    
                 }
                 types = {
                     Clouds:"Cloudy",
@@ -326,9 +400,6 @@ subm.addEventListener("click",()=>{
             humidity.innerText=`${report.main.humidity}%`;
             wind.innerText=`${report.wind.speed} km/h`;
             let x = report.weather[0].main;
-            condition.innerText=`${types[x]}`
-            body.style.backgroundImage=`url(${back[x]})`;
-            icon.src= `${icons[x]}`;
             if("rain" in report){
                 opvl.innerText=`${report.rain["1h"]} mm`;
             }
@@ -340,24 +411,6 @@ subm.addEventListener("click",()=>{
                 op.innerText=`Rain`;
                 opvl.innerText="00 mm";
             }
-            const url2 =`https://api-bdc.net/data/timezone-by-location?latitude=${report.coord.lat}&longitude=${report.coord.lon}&key=${t_key}`;
-            (async function time(){
-                let r = await fetch(url2);
-                let times =await r.json();
-                let timess = new Date(`${times.localTime}`);
-                if(timess.getMinutes().toString().length==1&&timess.getHours().toString().length==1){
-                    timesis.innerText=`0${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
-                }
-                else if(timess.getHours().toString().length==1){
-                    timesis.innerText=`0${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
-                }
-                else if(timess.getMinutes().toString().length==1){
-                    timesis.innerText=`${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
-                }
-                else{
-                    timesis.innerText=`${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
-                }
-            })();
         }
     })();
 })
@@ -369,8 +422,53 @@ kolkata.addEventListener("click",()=>{
      (async function main(){
          let response =  await fetch(url);
          report =await response.json();
-
-        
+         let locresponse = await fetch(`https://api.geoapify.com/v1/geocode/search?text=Kolkata&limit=1&apiKey=${l_key}`);
+         let report2 = await locresponse.json();
+         const url2 =`https://api-bdc.net/data/timezone-by-location?latitude=${report2.features[0].properties.lat}&longitude=${report2.features[0].properties.lon}&key=${t_key}`;
+         (async function time(){
+             let r = await fetch(url2);
+             let times =await r.json();
+             let timess = new Date(`${times.localTime}`);
+             body.style.backgroundImage=`url(${back[x]})`;
+             condition.innerText=`${types[x]}`
+             icon.src= `${icons[x]}`;
+             if(timess.getMinutes().toString().length==1&&timess.getHours().toString().length==1){
+                 timesis.innerText=`0${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
+             }
+             else if(timess.getHours().toString().length==1){
+                 timesis.innerText=`0${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
+             }
+             else if(timess.getMinutes().toString().length==1){
+                if(parseInt(timess.getHours())>=19){
+                    if(x =="Clear"){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\nightmoon.svg`;
+                        condition.innerText=`Clear night`
+                    }
+                    else if(report.clouds.all<50){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\partly-cloudy-night.svg`;
+                        condition.innerText=`Partly cloudy night`
+                    }
+                }
+                 timesis.innerText=`${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
+             }
+             else{
+                if(parseInt(timess.getHours())>=19){
+                    if(x =="Clear"){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\nightmoon.svg`;
+                        condition.innerText=`Clear night`
+                    }
+                    else if(report.clouds.all<50){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\partly-cloudy-night.svg`;
+                        condition.innerText=`Partly cloudy night`
+                    }
+                }
+                 timesis.innerText=`${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
+             }
+         })();
         if(report.clouds.all>50){
             back={
                 Clouds:"assets/cloudy.webp",
@@ -399,7 +497,6 @@ kolkata.addEventListener("click",()=>{
                 Squall : "Windy",
                 Smoke:"Smokey",
                 Haze:"Hazy"
-
             }
             icons={
                 Clouds:"assets/full-cloud.svg",
@@ -414,7 +511,6 @@ kolkata.addEventListener("click",()=>{
                 Smoke:"assets/foggy.svg",
                 Snow:"assets/snowy.svg",
                 Haze:"assets/hazy.svg"
-
             }
         }
         else{
@@ -468,9 +564,6 @@ kolkata.addEventListener("click",()=>{
         humidity.innerText=`${report.main.humidity}%`;
         wind.innerText=`${report.wind.speed} km/h`;
         let x = report.weather[0].main;
-        body.style.backgroundImage=`url(${back[x]})`;
-        condition.innerText=`${types[x]}`
-        icon.src= `${icons[x]}`;
         if("rain" in report){
             opvl.innerText=`${report.rain["1h"]} mm`;
         }
@@ -482,11 +575,26 @@ kolkata.addEventListener("click",()=>{
             op.innerText=`Rain`;
             opvl.innerText="00 mm";
         }
-        const url2 =`https://api-bdc.net/data/timezone-by-location?latitude=${report.coord.lat}&longitude=${report.coord.lon}&key=${t_key}`;
+    })();
+})
+
+Manchester.addEventListener("click",()=>{
+    icon.style.display="inline"
+    citis.style.color="white";
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=Manchester&units=metric&appid=${w_key}`;
+    (async function main(){
+        let response =  await fetch(url);
+        report =await response.json();
+        let locresponse = await fetch(`https://api.geoapify.com/v1/geocode/search?text=Manchester&limit=1&apiKey=${l_key}`);
+        let report2 = await locresponse.json();
+        const url2 =`https://api-bdc.net/data/timezone-by-location?latitude=${report2.features[0].properties.lat}&longitude=${report2.features[0].properties.lon}&key=${t_key}`;
         (async function time(){
             let r = await fetch(url2);
             let times =await r.json();
             let timess = new Date(`${times.localTime}`);
+            body.style.backgroundImage=`url(${back[x]})`;
+            condition.innerText=`${types[x]}`
+            icon.src= `${icons[x]}`;
             if(timess.getMinutes().toString().length==1&&timess.getHours().toString().length==1){
                 timesis.innerText=`0${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
             }
@@ -494,23 +602,36 @@ kolkata.addEventListener("click",()=>{
                 timesis.innerText=`0${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
             }
             else if(timess.getMinutes().toString().length==1){
+                if(parseInt(timess.getHours())>=19){
+                    if(x =="Clear"){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\nightmoon.svg`;
+                        condition.innerText=`Clear night`
+                    }
+                    else if(report.clouds.all<50){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\partly-cloudy-night.svg`;
+                        condition.innerText=`Partly cloudy night`
+                    }
+                }
                 timesis.innerText=`${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
             }
             else{
+                if(parseInt(timess.getHours())>=19){
+                    if(x =="Clear"){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\nightmoon.svg`;
+                        condition.innerText=`Clear night`
+                    }
+                    else if(report.clouds.all<50){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\partly-cloudy-night.svg`;
+                        condition.innerText=`Partly cloudy night`
+                    }
+                }
                 timesis.innerText=`${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
             }
         })();
-    })();
-})
-
-Manchester.addEventListener("click",()=>{
-    icon.style.display="inline"
-    citis.style.color="white";
-     const url = `https://api.openweathermap.org/data/2.5/weather?q=Manchester&units=metric&appid=${w_key}`;
-     (async function main(){
-         let response =  await fetch(url);
-         report =await response.json();
-
         if(report.clouds.all>50){
             back={
                 Clouds:"assets/cloudy.webp",
@@ -583,7 +704,6 @@ Manchester.addEventListener("click",()=>{
                 Squall : "Windy",
                 Smoke:"Smokey",
                 Haze:"Hazy"
-
             }
             icons={
                 Clouds:"assets/cloudy.svg",
@@ -606,9 +726,6 @@ Manchester.addEventListener("click",()=>{
         humidity.innerText=`${report.main.humidity}%`;
         wind.innerText=`${report.wind.speed} km/h`;
         let x = report.weather[0].main;
-        body.style.backgroundImage=`url(${back[x]})`;
-        condition.innerText=`${types[x]}`
-        icon.src= `${icons[x]}`;
         if("rain" in report){
             opvl.innerText=`${report.rain["1h"]}mm`;
         }
@@ -620,11 +737,26 @@ Manchester.addEventListener("click",()=>{
             op.innerText=`Rain`;
             opvl.innerText="00 mm";
         }
-        const url2 =`https://api-bdc.net/data/timezone-by-location?latitude=${report.coord.lat}&longitude=${report.coord.lon}&key=${t_key}`;
+    })();
+})
+
+california.addEventListener("click",()=>{
+    icon.style.display="inline"
+    citis.style.color="white";
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=California&units=metric&appid=${w_key}`;
+    (async function main(){
+        let response =  await fetch(url);
+        report =await response.json();
+        let locresponse = await fetch(`https://api.geoapify.com/v1/geocode/search?text=California&limit=1&apiKey=${l_key}`);
+        let report2 = await locresponse.json();
+        const url2 =`https://api-bdc.net/data/timezone-by-location?latitude=${report2.features[0].properties.lat}&longitude=${report2.features[0].properties.lon}&key=${t_key}`;
         (async function time(){
             let r = await fetch(url2);
             let times =await r.json();
             let timess = new Date(`${times.localTime}`);
+            body.style.backgroundImage=`url(${back[x]})`;
+            condition.innerText=`${types[x]}`
+            icon.src= `${icons[x]}`;
             if(timess.getMinutes().toString().length==1&&timess.getHours().toString().length==1){
                 timesis.innerText=`0${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
             }
@@ -632,25 +764,36 @@ Manchester.addEventListener("click",()=>{
                 timesis.innerText=`0${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
             }
             else if(timess.getMinutes().toString().length==1){
+                if(parseInt(timess.getHours())>=19){
+                    if(x =="Clear"){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\nightmoon.svg`;
+                        condition.innerText=`Clear night`
+                    }
+                    else if(report.clouds.all<50){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\partly-cloudy-night.svg`;
+                        condition.innerText=`Partly cloudy night`
+                    }
+                }
                 timesis.innerText=`${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
             }
             else{
+                if(parseInt(timess.getHours())>=19){
+                    if(x =="Clear"){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\nightmoon.svg`;
+                        condition.innerText=`Clear night`
+                    }
+                    else if(report.clouds.all<50){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\partly-cloudy-night.svg`;
+                        condition.innerText=`Partly cloudy night`
+                    }
+                }
                 timesis.innerText=`${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
             }
-           
         })();
-    })();
-})
-
-california.addEventListener("click",()=>{
-    icon.style.display="inline"
-    citis.style.color="white";
-     const url = `https://api.openweathermap.org/data/2.5/weather?q=California&units=metric&appid=${w_key}`;
-     (async function main(){
-         let response =  await fetch(url);
-         report =await response.json();
-
-        
         if(report.clouds.all>50){
             back={
                 Clouds:"assets/cloudy.webp",
@@ -745,9 +888,6 @@ california.addEventListener("click",()=>{
         humidity.innerText=`${report.main.humidity}%`;
         wind.innerText=`${report.wind.speed} km/h`;
         let x = report.weather[0].main;
-        body.style.backgroundImage=`url(${back[x]})`;
-        condition.innerText=`${types[x]}`
-        icon.src= `${icons[x]}`;
         if("rain" in report){
             opvl.innerText=`${report.rain["1h"]}mm`;
         }
@@ -758,35 +898,18 @@ california.addEventListener("click",()=>{
         else{
             opvl.innerText="00 mm";
         }
-        const url2 =`https://api-bdc.net/data/timezone-by-location?latitude=${report.coord.lat}&longitude=${report.coord.lon}&key=${t_key}`;
-        (async function time(){
-            let r = await fetch(url2);
-            let times =await r.json();
-            let timess = new Date(`${times.localTime}`);
-            if(timess.getMinutes().toString().length==1&&timess.getHours().toString().length==1){
-                timesis.innerText=`0${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
-            }
-            else if(timess.getHours().toString().length==1){
-                timesis.innerText=`0${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
-            }
-            else if(timess.getMinutes().toString().length==1){
-                timesis.innerText=`${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
-            }
-            else{
-                timesis.innerText=`${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
-            }
-           
-        })();
     })();
 })
-
 tokyo.addEventListener("click",()=>{
     icon.style.display="inline"
     citis.style.color="white";
-     const url = `https://api.openweathermap.org/data/2.5/weather?q=Tokyo&units=metric&appid=${w_key}`;
-     (async function main(){
-         let response =  await fetch(url);
-         report =await response.json();
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=Tokyo&units=metric&appid=${w_key}`;
+    (async function main(){
+        let response =  await fetch(url);
+        report =await response.json();
+        let locresponse = await fetch(`https://api.geoapify.com/v1/geocode/search?text=Tokyo&limit=1&apiKey=${l_key}`);
+        let report2 = await locresponse.json();
+        const url2 =`https://api-bdc.net/data/timezone-by-location?latitude=${report2.features[0].properties.lat}&longitude=${report2.features[0].properties.lon}&key=${t_key}`;
         if(report.clouds.all>50){
             back={
                 Clouds:"assets/cloudy.webp",
@@ -859,7 +982,6 @@ tokyo.addEventListener("click",()=>{
                 Squall : "Windy",
                 Smoke:"Smokey",
                 Haze:"Hazy"
-
             }
             icons={
                 Clouds:"assets/cloudy.svg",
@@ -874,7 +996,6 @@ tokyo.addEventListener("click",()=>{
                 Smoke:"assets/foggy.svg",
                 Snow:"assets/snowy.svg",
                 Haze:"assets/hazy.svg"
-
             }
         }
         temps.innerText = `${Math.floor(report.main.temp)}°c`;
@@ -883,9 +1004,6 @@ tokyo.addEventListener("click",()=>{
         humidity.innerText=`${report.main.humidity}%`;
         wind.innerText=`${report.wind.speed}km/h`;
         let x = report.weather[0].main;
-        body.style.backgroundImage=`url(${back[x]})`;
-        condition.innerText=`${types[x]}`
-        icon.src= `${icons[x]}`;
         if("rain" in report){
             opvl.innerText=`${report.rain["1h"]}mm`;
         }
@@ -897,11 +1015,13 @@ tokyo.addEventListener("click",()=>{
             op.innerText=`Rain`;
             opvl.innerText="00 mm";
         }
-        const url2 =`https://api-bdc.net/data/timezone-by-location?latitude=${report.coord.lat}&longitude=${report.coord.lon}&key=${t_key}`;
         (async function time(){
             let r = await fetch(url2);
             let times =await r.json();
             let timess = new Date(`${times.localTime}`);
+            condition.innerText=`${types[x]}`
+            icon.src= `${icons[x]}`;
+            body.style.backgroundImage=`url(${back[x]})`;
             if(timess.getMinutes().toString().length==1&&timess.getHours().toString().length==1){
                 timesis.innerText=`0${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
             }
@@ -909,9 +1029,33 @@ tokyo.addEventListener("click",()=>{
                 timesis.innerText=`0${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
             }
             else if(timess.getMinutes().toString().length==1){
+                if(parseInt(timess.getHours())>=19){
+                    if(x =="Clear"){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\nightmoon.svg`;
+                        condition.innerText=`Clear night`
+                    }
+                    else if(report.clouds.all<50){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\partly-cloudy-night.svg`;
+                        condition.innerText=`Partly cloudy night`
+                    }
+                }
                 timesis.innerText=`${timess.getHours()}:0${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
             }
             else{
+                if(parseInt(timess.getHours())>=19){
+                    if(x =="Clear"){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\nightmoon.svg`;
+                        condition.innerText=`Clear night`
+                    }
+                    else if(report.clouds.all<50){
+                        body.style.backgroundImage="url(assets/night.jpeg)";
+                        icon.src = `assets\\partly-cloudy-night.svg`;
+                        condition.innerText=`Partly cloudy night`
+                    }
+                }
                 timesis.innerText=`${timess.getHours()}:${timess.getMinutes()}-${daysOfWeek[timess.getDay()]}, ${timess.getDate()} ${months[timess.getMonth()]} '${timess.getFullYear()}`;
             }
         })();
