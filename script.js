@@ -98,7 +98,7 @@ function def(){
                         icon.src = `assets\\nightmoon.svg`;
                         condition.innerText=`Clear sky`
                     }
-                    else if(report.clouds.all<50){
+                    else if(report.clouds.all<50 && x == "Clouds"){
                         body.style.backgroundImage="url(assets/night.jpeg)";
                         icon.src = `assets\\partly-cloudy-night.svg`;
                         condition.innerText=`Partly cloudy night`
@@ -113,7 +113,7 @@ function def(){
                         icon.src = `assets\\nightmoon.svg`;
                         condition.innerText=`Clear sky`
                     }
-                    else if(report.clouds.all<50){
+                    else if(report.clouds.all<50 && x == "Clouds"){
                         body.style.backgroundImage="url(assets/night.jpeg)";
                         icon.src = `assets\\partly-cloudy-night.svg`;
                         condition.innerText=`Partly cloudy night`
@@ -281,7 +281,7 @@ subm.addEventListener("click",()=>{
                             icon.src = `assets\\nightmoon.svg`;
                             condition.innerText=`Clear night`
                         }
-                        else if(report.clouds.all<50){
+                        else if(report.clouds.all<50 && x == "Clouds"){
                             body.style.backgroundImage="url(assets/night.jpeg)";
                             icon.src = `assets\\partly-cloudy-night.svg`;
                             condition.innerText=`Partly cloudy night`
@@ -296,7 +296,7 @@ subm.addEventListener("click",()=>{
                             icon.src = `assets\\nightmoon.svg`;
                             condition.innerText=`Clear night`
                         }
-                        else if(report.clouds.all<50){
+                        else if(report.clouds.all<50 && x == "Clouds"){
                             body.style.backgroundImage="url(assets/night.jpeg)";
                             icon.src = `assets\\partly-cloudy-night.svg`;
                             condition.innerText=`Partly cloudy night`
@@ -445,7 +445,7 @@ kolkata.addEventListener("click",()=>{
                         icon.src = `assets\\nightmoon.svg`;
                         condition.innerText=`Clear night`
                     }
-                    else if(report.clouds.all<50){
+                    else if(report.clouds.all<50 && x == "Clouds"){
                         body.style.backgroundImage="url(assets/night.jpeg)";
                         icon.src = `assets\\partly-cloudy-night.svg`;
                         condition.innerText=`Partly cloudy night`
@@ -460,7 +460,7 @@ kolkata.addEventListener("click",()=>{
                         icon.src = `assets\\nightmoon.svg`;
                         condition.innerText=`Clear night`
                     }
-                    else if(report.clouds.all<50){
+                    else if(report.clouds.all<50 && x == "Clouds"){
                         body.style.backgroundImage="url(assets/night.jpeg)";
                         icon.src = `assets\\partly-cloudy-night.svg`;
                         condition.innerText=`Partly cloudy night`
@@ -608,7 +608,7 @@ Manchester.addEventListener("click",()=>{
                         icon.src = `assets\\nightmoon.svg`;
                         condition.innerText=`Clear night`
                     }
-                    else if(report.clouds.all<50){
+                    else if(report.clouds.all<50 && x == "Clouds"){
                         body.style.backgroundImage="url(assets/night.jpeg)";
                         icon.src = `assets\\partly-cloudy-night.svg`;
                         condition.innerText=`Partly cloudy night`
@@ -623,7 +623,7 @@ Manchester.addEventListener("click",()=>{
                         icon.src = `assets\\nightmoon.svg`;
                         condition.innerText=`Clear night`
                     }
-                    else if(report.clouds.all<50){
+                    else if(report.clouds.all<50 && x == "Clouds"){
                         body.style.backgroundImage="url(assets/night.jpeg)";
                         icon.src = `assets\\partly-cloudy-night.svg`;
                         condition.innerText=`Partly cloudy night`
@@ -770,7 +770,7 @@ california.addEventListener("click",()=>{
                         icon.src = `assets\\nightmoon.svg`;
                         condition.innerText=`Clear night`
                     }
-                    else if(report.clouds.all<50){
+                    else if(report.clouds.all<50 && x == "Clouds"){
                         body.style.backgroundImage="url(assets/night.jpeg)";
                         icon.src = `assets\\partly-cloudy-night.svg`;
                         condition.innerText=`Partly cloudy night`
@@ -785,7 +785,7 @@ california.addEventListener("click",()=>{
                         icon.src = `assets\\nightmoon.svg`;
                         condition.innerText=`Clear night`
                     }
-                    else if(report.clouds.all<50){
+                    else if(report.clouds.all<50 && x == "Clouds"){
                         body.style.backgroundImage="url(assets/night.jpeg)";
                         icon.src = `assets\\partly-cloudy-night.svg`;
                         condition.innerText=`Partly cloudy night`
@@ -1035,7 +1035,7 @@ tokyo.addEventListener("click",()=>{
                         icon.src = `assets\\nightmoon.svg`;
                         condition.innerText=`Clear night`
                     }
-                    else if(report.clouds.all<50){
+                    else if(report.clouds.all<50 && x == "Clouds"){
                         body.style.backgroundImage="url(assets/night.jpeg)";
                         icon.src = `assets\\partly-cloudy-night.svg`;
                         condition.innerText=`Partly cloudy night`
@@ -1050,7 +1050,7 @@ tokyo.addEventListener("click",()=>{
                         icon.src = `assets\\nightmoon.svg`;
                         condition.innerText=`Clear night`
                     }
-                    else if(report.clouds.all<50){
+                    else if(report.clouds.all<50 && x == "Clouds"){
                         body.style.backgroundImage="url(assets/night.jpeg)";
                         icon.src = `assets\\partly-cloudy-night.svg`;
                         condition.innerText=`Partly cloudy night`
